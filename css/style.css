@@ -22,12 +22,6 @@ html {
   box-sizing: inherit;
 }
 
-ul,
-ol {
-  padding: 0;
-  list-style: none;
-}
-
 body,
 h1,
 h2,
@@ -100,7 +94,7 @@ body {
 .header__search svg {
   width: 20px;
   position: absolute;
-  top: 7px;
+  top: 9px;
   left: 8px;
 }
 
@@ -111,6 +105,7 @@ body {
   border: 2px solid #A5A5A5;
   background-color: transparent;
   width: 260px;
+  appearance: none;
 }
 
 .content-page {
@@ -218,6 +213,8 @@ body._lock {
 .menu__list {
   display: flex;
   justify-content: space-between;
+  list-style: none;
+  padding: 0;
 }
 
 .menu__link {
@@ -235,6 +232,8 @@ body._lock {
 
 .menu__sub-list {
   text-align: left;
+  list-style: none;
+  padding: 0;
   position: absolute;
   z-index: 4;
   top: 100%;
@@ -614,6 +613,10 @@ body.mouse .infoLinks__item-row:hover {
 }
 
 @media (max-width: 990px) {
+  .header {
+    margin-bottom: 0;
+  }
+
   .header__top-content {
     display: flex;
     flex-direction: column;
@@ -631,11 +634,6 @@ body.mouse .infoLinks__item-row:hover {
     width: 500px;
   }
 
-  .header__search,
-  .search {
-    width: 100%;
-  }
-
   .header__contacts {
     display: none;
   }
@@ -646,6 +644,11 @@ body.mouse .infoLinks__item-row:hover {
 
   .header__menu {
     top: 120px;
+  }
+
+  .header__search,
+  .search {
+    width: 100%;
   }
 
   .menu__icon {
@@ -957,6 +960,16 @@ body.mouse .infoLinks__item-row:hover {
     margin-right: 0;
   }
 
+  .about__list {
+    margin-left: -20px;
+    list-style: disc;
+  }
+
+  .about__list ol {
+    margin-left: -20px;
+    list-style: lower-alpha;
+  }
+
   .infoLinks__column {
     flex: 0 0 100%;
   }
@@ -989,6 +1002,10 @@ body.mouse .infoLinks__item-row:hover {
 
   .intro__inner {
     min-height: 360px;
+  }
+
+  .intro__title {
+    font-size: 18px;
   }
 
   .intro__text {
