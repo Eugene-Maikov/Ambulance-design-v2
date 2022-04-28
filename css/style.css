@@ -451,6 +451,7 @@ body.touch .menu__list > li._active .menu__arrow {
 
 .slider__item img {
   width: 95%;
+  border-radius: 7px;
 }
 
 .slider__control {
@@ -808,14 +809,14 @@ body.mouse .infoLinks__item-row:hover {
   .slider__control.prev {
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 7px 0 0 7px;
-    left: 0;
+    left: 6px;
     background-image: none;
   }
 
   .slider__control.next {
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 0 7px 7px 0;
-    right: 0;
+    right: 6px;
     background-image: none;
   }
 
@@ -891,6 +892,10 @@ body.mouse .infoLinks__item-row:hover {
   .footer__item-text--loc {
     font-size: 14px;
     width: 182px;
+  }
+
+  .section-slider {
+    margin-bottom: 0;
   }
 
   .intro__title {
