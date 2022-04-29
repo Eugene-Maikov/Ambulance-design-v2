@@ -465,13 +465,13 @@ body.touch .menu__list > li._active .menu__arrow {
 .slider__control.prev {
   border-radius: 7px 0 0 7px;
   left: 0;
-  background-image: url("../../img/icons/1.svg") center no-repeat;
+  background-image: url("../img/icons/1.svg") center no-repeat;
   background-color: rgba(0, 0, 0, 0.6);
   transition: all 0.3s ease-in-out;
 }
 
 .slider__control.prev:hover {
-  background-image: url("../../img/icons/1.svg") center no-repeat;
+  background-image: url("../img/icons/1.svg") center no-repeat;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
@@ -479,12 +479,12 @@ body.touch .menu__list > li._active .menu__arrow {
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 0 7px 7px 0;
   right: 0;
-  background-image: url("../../img/icons/2.svg") center no-repeat;
+  background-image: url("../img/icons/2.svg") center no-repeat;
   transition: all 0.3s ease-in-out;
 }
 
 .slider__control.next:hover {
-  background-image: url("../../img/icons/2.svg") center no-repeat;
+  background-image: url("../img/icons/2.svg") center no-repeat;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
