@@ -1,32 +1,595 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+const isMobile = {
+  Android: function () {
+    return navigator.userAgent.match(/Android/i);
+  },
+  BlackBerry: function () {
+    return navigator.userAgent.match(/BlackBerry/i);
+  },
+  iOS: function () {
+    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+  },
+  Opera: function () {
+    return navigator.userAgent.match(/Opera Mini/i);
+  },
+  Windows: function () {
+    return navigator.userAgent.match(/IEMobile/i);
+  },
+  any: function () {
+    return (
+      isMobile.Android() ||
+      isMobile.BlackBerry() ||
+      isMobile.iOS() ||
+      isMobile.Opera() ||
+      isMobile.Windows()
+    );
+  },
+};
+
+if (isMobile.any()) {
+  document.body.classList.add("touch");
+
+  let menuArrows = document.querySelectorAll(".menu__arrow");
+  if (menuArrows.length > 0) {
+    for (let i = 0; i < menuArrows.length; i++) {
+      const menuArrow = menuArrows[i];
+      menuArrow.addEventListener("click", function (e) {
+        menuArrow.parentElement.classList.toggle("_active");
+      });
+    }
+  }
+} else {
+  document.body.classList.add("mouse");
+}
+
+// BURGER-MENU
+const iconMenu = document.querySelector(".menu__icon");
+const menuBody = document.querySelector(".menu__body");
+if (iconMenu) {
+  iconMenu.addEventListener("click", function (e) {
+    document.body.classList.toggle("_lock");
+    iconMenu.classList.toggle("_active");
+    menuBody.classList.toggle("_active");
+  });
+}
+
+/**
+ * ChiefSlider by Itchief v2.0.0 (https://github.com/itchief/ui-components/tree/master/simple-adaptive-slider)
+ * Copyright 2020 - 2021 Alexander Maltsev
+ * Licensed under MIT (https://github.com/itchief/ui-components/blob/master/LICENSE)
  */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/main.js":
-/*!************************!*\
-  !*** ./src/js/main.js ***!
-  \************************/
-/***/ (function() {
+(function () {
+  if (typeof window.CustomEvent === "function") return false;
+  function CustomEvent(event, params) {
+    params = params || { bubbles: false, cancelable: false, detail: null };
+    var e = document.createEvent("CustomEvent");
+    e.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    return e;
+  }
+  window.CustomEvent = CustomEvent;
+})();
 
-eval("const isMobile = {\r\n  Android: function () {\r\n    return navigator.userAgent.match(/Android/i);\r\n  },\r\n  BlackBerry: function () {\r\n    return navigator.userAgent.match(/BlackBerry/i);\r\n  },\r\n  iOS: function () {\r\n    return navigator.userAgent.match(/iPhone|iPad|iPod/i);\r\n  },\r\n  Opera: function () {\r\n    return navigator.userAgent.match(/Opera Mini/i);\r\n  },\r\n  Windows: function () {\r\n    return navigator.userAgent.match(/IEMobile/i);\r\n  },\r\n  any: function () {\r\n    return (\r\n      isMobile.Android() ||\r\n      isMobile.BlackBerry() ||\r\n      isMobile.iOS() ||\r\n      isMobile.Opera() ||\r\n      isMobile.Windows()\r\n    );\r\n  },\r\n};\r\n\r\nif (isMobile.any()) {\r\n  document.body.classList.add(\"touch\");\r\n\r\n  let menuArrows = document.querySelectorAll(\".menu__arrow\");\r\n  if (menuArrows.length > 0) {\r\n    for (let i = 0; i < menuArrows.length; i++) {\r\n      const menuArrow = menuArrows[i];\r\n      menuArrow.addEventListener(\"click\", function (e) {\r\n        menuArrow.parentElement.classList.toggle(\"_active\");\r\n      });\r\n    }\r\n  }\r\n} else {\r\n  document.body.classList.add(\"mouse\");\r\n}\r\n\r\n// BURGER-MENU\r\nconst iconMenu = document.querySelector(\".menu__icon\");\r\nconst menuBody = document.querySelector(\".menu__body\");\r\nif (iconMenu) {\r\n  iconMenu.addEventListener(\"click\", function (e) {\r\n    document.body.classList.toggle(\"_lock\");\r\n    iconMenu.classList.toggle(\"_active\");\r\n    menuBody.classList.toggle(\"_active\");\r\n  });\r\n}\r\n\r\n/**\r\n * ChiefSlider by Itchief v2.0.0 (https://github.com/itchief/ui-components/tree/master/simple-adaptive-slider)\r\n * Copyright 2020 - 2021 Alexander Maltsev\r\n * Licensed under MIT (https://github.com/itchief/ui-components/blob/master/LICENSE)\r\n */\r\n\r\n(function () {\r\n  if (typeof window.CustomEvent === \"function\") return false;\r\n  function CustomEvent(event, params) {\r\n    params = params || { bubbles: false, cancelable: false, detail: null };\r\n    var e = document.createEvent(\"CustomEvent\");\r\n    e.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);\r\n    return e;\r\n  }\r\n  window.CustomEvent = CustomEvent;\r\n})();\r\n\r\nvar WRAPPER_SELECTOR = \".slider__wrapper\";\r\nvar ITEMS_SELECTOR = \".slider__items\";\r\nvar ITEM_SELECTOR = \".slider__item\";\r\nvar CONTROL_CLASS = \"slider__control\";\r\n\r\n/* var ITEM_CLASS_ACTIVE = 'slider__item_active';\r\nvar CONTROL_SELECTOR = '.slider__control';\r\nvar CONTROL_CLASS_SHOW = 'slider__control_show';\r\n// индикаторы\r\nvar INDICATOR_WRAPPER_ELEMENT = 'ol';\r\nvar INDICATOR_WRAPPER_CLASS = 'slider__indicators';\r\nvar INDICATOR_ITEM_ELEMENT = 'li';\r\nvar INDICATOR_ITEM_CLASS = 'slider__indicator';\r\nvar INDICATOR_ITEM_CLASS_ACTIVE = 'slider__indicator_active';\r\n// порог для переключения слайда (40%)\r\nvar POS_THRESHOLD = 40;\r\n// класс для отключения transition\r\nvar TRANSITION_NONE = 'transition-none';*/\r\n\r\nvar SELECTOR_PREV = '.slider__control[data-slide=\"prev\"]';\r\nvar SELECTOR_NEXT = '.slider__control[data-slide=\"next\"]';\r\nvar SELECTOR_INDICATOR = \".slider__indicators>li\";\r\nvar SLIDER_TRANSITION_OFF = \"slider_disable-transition\";\r\nvar CLASS_CONTROL_HIDE = \"slider__control_hide\";\r\nvar CLASS_ITEM_ACTIVE = \"slider__item_active\";\r\nvar CLASS_INDICATOR_ACTIVE = \"active\";\r\n\r\nfunction ChiefSlider(selector, config) {\r\n  // элементы слайдера\r\n  var $root =\r\n    typeof selector === \"string\" ? document.querySelector(selector) : selector;\r\n  this._$root = $root;\r\n  this._$wrapper = $root.querySelector(WRAPPER_SELECTOR);\r\n  this._$items = $root.querySelector(ITEMS_SELECTOR);\r\n  this._$itemList = $root.querySelectorAll(ITEM_SELECTOR);\r\n  this._$controlPrev = $root.querySelector(SELECTOR_PREV);\r\n  this._$controlNext = $root.querySelector(SELECTOR_NEXT);\r\n  this._$indicatorList = $root.querySelectorAll(SELECTOR_INDICATOR);\r\n  // экстремальные значения слайдов\r\n  this._minOrder = 0;\r\n  this._maxOrder = 0;\r\n  this._$itemWithMinOrder = null;\r\n  this._$itemWithMaxOrder = null;\r\n  this._minTranslate = 0;\r\n  this._maxTranslate = 0;\r\n  // направление смены слайдов (по умолчанию)\r\n  this._direction = \"next\";\r\n  // determines whether the position of item needs to be determined\r\n  this._balancingItemsFlag = false;\r\n  this._activeItems = [];\r\n  // текущее значение трансформации\r\n  this._transform = 0;\r\n  // swipe параметры\r\n  this._hasSwipeState = false;\r\n  this.__swipeStartPos = 0;\r\n  // slider properties\r\n  this._transform = 0; // текущее значение трансформации\r\n  this._intervalId = null;\r\n  // configuration of the slider\r\n  this._config = {\r\n    loop: true,\r\n    autoplay: false,\r\n    interval: 5000,\r\n    refresh: true,\r\n    swipe: true,\r\n  };\r\n  for (var key in config) {\r\n    if (this._config.hasOwnProperty(key)) {\r\n      this._config[key] = config[key];\r\n    }\r\n  }\r\n  // create some constants\r\n  var $itemList = this._$itemList;\r\n  var widthItem = $itemList[0].offsetWidth;\r\n  var widthWrapper = this._$wrapper.offsetWidth;\r\n  var itemsInVisibleArea = Math.round(widthWrapper / widthItem);\r\n  // initial setting properties\r\n  this._widthItem = widthItem;\r\n  this._widthWrapper = widthWrapper;\r\n  this._itemsInVisibleArea = itemsInVisibleArea;\r\n  this._transformStep = 100 / itemsInVisibleArea;\r\n  // initial setting order and translate items\r\n  for (var i = 0, length = $itemList.length; i < length; i++) {\r\n    $itemList[i].dataset.index = i;\r\n    $itemList[i].dataset.order = i;\r\n    $itemList[i].dataset.translate = 0;\r\n    if (i < itemsInVisibleArea) {\r\n      this._activeItems.push(i);\r\n    }\r\n  }\r\n  if (this._config.loop) {\r\n    // перемещаем последний слайд перед первым\r\n    var count = $itemList.length - 1;\r\n    var translate = -$itemList.length * 100;\r\n    $itemList[count].dataset.order = -1;\r\n    $itemList[count].dataset.translate = -$itemList.length * 100;\r\n    $itemList[count].style.transform = \"translateX(\" + translate + \"%)\";\r\n    this.__refreshExtremeValues();\r\n  } else {\r\n    if (this._$controlPrev) {\r\n      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);\r\n    }\r\n  }\r\n  this._setActiveClass();\r\n  this._addEventListener();\r\n  this._updateIndicators();\r\n  this._autoplay();\r\n}\r\n\r\n// подключения обработчиков событий для слайдера\r\nChiefSlider.prototype._addEventListener = function () {\r\n  var $root = this._$root;\r\n  var $items = this._$items;\r\n  var config = this._config;\r\n  function onClick(e) {\r\n    var $target = e.target;\r\n    this._autoplay(\"stop\");\r\n    if ($target.classList.contains(CONTROL_CLASS)) {\r\n      e.preventDefault();\r\n      this._direction = $target.dataset.slide;\r\n      this._move();\r\n    } else if ($target.dataset.slideTo) {\r\n      var index = parseInt($target.dataset.slideTo);\r\n      this._moveTo(index);\r\n    }\r\n    if (this._config.loop) {\r\n      this._autoplay();\r\n    }\r\n  }\r\n  function onMouseEnter(e) {\r\n    this._autoplay(\"stop\");\r\n  }\r\n  function onMouseLeave(e) {\r\n    this._autoplay();\r\n  }\r\n  function onTransitionStart() {\r\n    if (this._balancingItemsFlag) {\r\n      return;\r\n    }\r\n    this._balancingItemsFlag = true;\r\n    window.requestAnimationFrame(this._balancingItems.bind(this));\r\n  }\r\n  function onTransitionEnd() {\r\n    this._balancingItemsFlag = false;\r\n  }\r\n  function onResize() {\r\n    window.requestAnimationFrame(this._refresh.bind(this));\r\n  }\r\n  function onSwipeStart(e) {\r\n    this._autoplay(\"stop\");\r\n    var event = e.type.search(\"touch\") === 0 ? e.touches[0] : e;\r\n    this._swipeStartPos = event.clientX;\r\n    this._hasSwipeState = true;\r\n  }\r\n  function onSwipeEnd(e) {\r\n    if (!this._hasSwipeState) {\r\n      return;\r\n    }\r\n    var event = e.type.search(\"touch\") === 0 ? e.changedTouches[0] : e;\r\n    var diffPos = this._swipeStartPos - event.clientX;\r\n    if (diffPos > 50) {\r\n      this._direction = \"next\";\r\n      this._move();\r\n    } else if (diffPos < -50) {\r\n      this._direction = \"prev\";\r\n      this._move();\r\n    }\r\n    this._hasSwipeState = false;\r\n    if (this._config.loop) {\r\n      this._autoplay();\r\n    }\r\n  }\r\n  function onDragStart(e) {\r\n    e.preventDefault();\r\n  }\r\n  function onVisibilityChange() {\r\n    if (document.visibilityState === \"hidden\") {\r\n      this._autoplay(\"stop\");\r\n    } else if (document.visibilityState === \"visible\") {\r\n      if (this._config.loop) {\r\n        this._autoplay();\r\n      }\r\n    }\r\n  }\r\n\r\n  $root.addEventListener(\"click\", onClick.bind(this));\r\n  $root.addEventListener(\"mouseenter\", onMouseEnter.bind(this));\r\n  $root.addEventListener(\"mouseleave\", onMouseLeave.bind(this));\r\n  // on resize\r\n  if (config.refresh) {\r\n    window.addEventListener(\"resize\", onResize.bind(this));\r\n  }\r\n  // on transitionstart and transitionend\r\n  if (config.loop) {\r\n    $items.addEventListener(\"transition-start\", onTransitionStart.bind(this));\r\n    $items.addEventListener(\"transitionend\", onTransitionEnd.bind(this));\r\n  }\r\n  // on touchstart and touchend\r\n  if (config.swipe) {\r\n    $root.addEventListener(\"touchstart\", onSwipeStart.bind(this));\r\n    $root.addEventListener(\"mousedown\", onSwipeStart.bind(this));\r\n    document.addEventListener(\"touchend\", onSwipeEnd.bind(this));\r\n    document.addEventListener(\"mouseup\", onSwipeEnd.bind(this));\r\n  }\r\n  $root.addEventListener(\"dragstart\", onDragStart.bind(this));\r\n  // при изменении активности вкладки\r\n  document.addEventListener(\"visibilitychange\", onVisibilityChange.bind(this));\r\n};\r\n\r\n// update values of extreme properties\r\nChiefSlider.prototype.__refreshExtremeValues = function () {\r\n  var $itemList = this._$itemList;\r\n  this._minOrder = +$itemList[0].dataset.order;\r\n  this._maxOrder = this._minOrder;\r\n  this._$itemByMinOrder = $itemList[0];\r\n  this._$itemByMaxOrder = $itemList[0];\r\n  this._minTranslate = +$itemList[0].dataset.translate;\r\n  this._maxTranslate = this._minTranslate;\r\n  for (var i = 0, length = $itemList.length; i < length; i++) {\r\n    var $item = $itemList[i];\r\n    var order = +$item.dataset.order;\r\n    if (order < this._minOrder) {\r\n      this._minOrder = order;\r\n      this._$itemByMinOrder = $item;\r\n      this._minTranslate = +$item.dataset.translate;\r\n    } else if (order > this._maxOrder) {\r\n      this._maxOrder = order;\r\n      this._$itemByMaxOrder = $item;\r\n      this._maxTranslate = +$item.dataset.translate;\r\n    }\r\n  }\r\n};\r\n\r\n// update position of item\r\nChiefSlider.prototype._balancingItems = function () {\r\n  if (!this._balancingItemsFlag) {\r\n    return;\r\n  }\r\n  var $wrapper = this._$wrapper;\r\n  var $wrapperClientRect = $wrapper.getBoundingClientRect();\r\n  var widthHalfItem = $wrapperClientRect.width / this._itemsInVisibleArea / 2;\r\n  var count = this._$itemList.length;\r\n  var translate;\r\n  var clientRect;\r\n  if (this._direction === \"next\") {\r\n    var wrapperLeft = $wrapperClientRect.left;\r\n    var $min = this._$itemByMinOrder;\r\n    translate = this._minTranslate;\r\n    clientRect = $min.getBoundingClientRect();\r\n    if (clientRect.right < wrapperLeft - widthHalfItem) {\r\n      $min.dataset.order = this._minOrder + count;\r\n      translate += count * 100;\r\n      $min.dataset.translate = translate;\r\n      $min.style.transform = \"translateX(\".concat(translate, \"%)\");\r\n      // update values of extreme properties\r\n      this.__refreshExtremeValues();\r\n    }\r\n  } else {\r\n    var wrapperRight = $wrapperClientRect.right;\r\n    var $max = this._$itemByMaxOrder;\r\n    translate = this._maxTranslate;\r\n    clientRect = $max.getBoundingClientRect();\r\n    if (clientRect.left > wrapperRight + widthHalfItem) {\r\n      $max.dataset.order = this._maxOrder - count;\r\n      translate -= count * 100;\r\n      $max.dataset.translate = translate;\r\n      $max.style.transform = \"translateX(\".concat(translate, \"%)\");\r\n      // update values of extreme properties\r\n      this.__refreshExtremeValues();\r\n    }\r\n  }\r\n  // updating...\r\n  requestAnimationFrame(this._balancingItems.bind(this));\r\n};\r\n\r\n// _setActiveClass\r\nChiefSlider.prototype._setActiveClass = function () {\r\n  var activeItems = this._activeItems;\r\n  var $itemList = this._$itemList;\r\n  for (var i = 0, length = $itemList.length; i < length; i++) {\r\n    var $item = $itemList[i];\r\n    var index = +$item.dataset.index;\r\n    if (activeItems.indexOf(index) > -1) {\r\n      $item.classList.add(CLASS_ITEM_ACTIVE);\r\n    } else {\r\n      $item.classList.remove(CLASS_ITEM_ACTIVE);\r\n    }\r\n  }\r\n};\r\n\r\n// _updateIndicators\r\nChiefSlider.prototype._updateIndicators = function () {\r\n  var $indicatorList = this._$indicatorList;\r\n  var $itemList = this._$itemList;\r\n  if (!$indicatorList.length) {\r\n    return;\r\n  }\r\n  for (var index = 0, length = $itemList.length; index < length; index++) {\r\n    var $item = $itemList[index];\r\n    if ($item.classList.contains(CLASS_ITEM_ACTIVE)) {\r\n      $indicatorList[index].classList.add(CLASS_INDICATOR_ACTIVE);\r\n    } else {\r\n      $indicatorList[index].classList.remove(CLASS_INDICATOR_ACTIVE);\r\n    }\r\n  }\r\n};\r\n\r\n// move slides\r\nChiefSlider.prototype._move = function () {\r\n  var step =\r\n    this._direction === \"next\" ? -this._transformStep : this._transformStep;\r\n  var transform = this._transform + step;\r\n  if (!this._config.loop) {\r\n    var endTransformValue =\r\n      this._transformStep * (this._$itemList.length - this._itemsInVisibleArea);\r\n    transform = Math.round(transform * 10) / 10;\r\n    if (transform < -endTransformValue || transform > 0) {\r\n      return;\r\n    }\r\n    this._$controlPrev.classList.remove(CLASS_CONTROL_HIDE);\r\n    this._$controlNext.classList.remove(CLASS_CONTROL_HIDE);\r\n    if (transform === -endTransformValue) {\r\n      this._$controlNext.classList.add(CLASS_CONTROL_HIDE);\r\n    } else if (transform === 0) {\r\n      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);\r\n    }\r\n  }\r\n  var activeIndex = [];\r\n  var i = 0;\r\n  var length;\r\n  var index;\r\n  var newIndex;\r\n  if (this._direction === \"next\") {\r\n    for (i = 0, length = this._activeItems.length; i < length; i++) {\r\n      index = this._activeItems[i];\r\n      newIndex = ++index;\r\n      if (newIndex > this._$itemList.length - 1) {\r\n        newIndex -= this._$itemList.length;\r\n      }\r\n      activeIndex.push(newIndex);\r\n    }\r\n  } else {\r\n    for (i = 0, length = this._activeItems.length; i < length; i++) {\r\n      index = this._activeItems[i];\r\n      newIndex = --index;\r\n      if (newIndex < 0) {\r\n        newIndex += this._$itemList.length;\r\n      }\r\n      activeIndex.push(newIndex);\r\n    }\r\n  }\r\n  this._activeItems = activeIndex;\r\n  this._setActiveClass();\r\n  this._updateIndicators();\r\n  this._transform = transform;\r\n  this._$items.style.transform = \"translateX(\" + transform + \"%)\";\r\n  this._$items.dispatchEvent(\r\n    new CustomEvent(\"transition-start\", { bubbles: true })\r\n  );\r\n};\r\n\r\n// _moveToNext\r\nChiefSlider.prototype._moveToNext = function () {\r\n  this._direction = \"next\";\r\n  this._move();\r\n};\r\n\r\n// _moveToPrev\r\nChiefSlider.prototype._moveToPrev = function () {\r\n  this._direction = \"prev\";\r\n  this._move();\r\n};\r\n\r\n// _moveTo\r\nChiefSlider.prototype._moveTo = function (index) {\r\n  var $indicatorList = this._$indicatorList;\r\n  var nearestIndex = null;\r\n  var diff = null;\r\n  var i;\r\n  var length;\r\n  for (i = 0, length = $indicatorList.length; i < length; i++) {\r\n    var $indicator = $indicatorList[i];\r\n    if ($indicator.classList.contains(CLASS_INDICATOR_ACTIVE)) {\r\n      var slideTo = +$indicator.dataset.slideTo;\r\n      if (diff === null) {\r\n        nearestIndex = slideTo;\r\n        diff = Math.abs(index - nearestIndex);\r\n      } else {\r\n        if (Math.abs(index - slideTo) < diff) {\r\n          nearestIndex = slideTo;\r\n          diff = Math.abs(index - nearestIndex);\r\n        }\r\n      }\r\n    }\r\n  }\r\n  diff = index - nearestIndex;\r\n  if (diff === 0) {\r\n    return;\r\n  }\r\n  this._direction = diff > 0 ? \"next\" : \"prev\";\r\n  for (i = 1; i <= Math.abs(diff); i++) {\r\n    this._move();\r\n  }\r\n};\r\n\r\n// _autoplay\r\nChiefSlider.prototype._autoplay = function (action) {\r\n  if (!this._config.autoplay) {\r\n    return;\r\n  }\r\n  if (action === \"stop\") {\r\n    clearInterval(this._intervalId);\r\n    this._intervalId = null;\r\n    return;\r\n  }\r\n  if (this._intervalId === null) {\r\n    this._intervalId = setInterval(\r\n      function () {\r\n        this._direction = \"next\";\r\n        this._move();\r\n      }.bind(this),\r\n      this._config.interval\r\n    );\r\n  }\r\n};\r\n\r\n// _refresh\r\nChiefSlider.prototype._refresh = function () {\r\n  // create some constants\r\n  var $itemList = this._$itemList;\r\n  var widthItem = $itemList[0].offsetWidth;\r\n  var widthWrapper = this._$wrapper.offsetWidth;\r\n  var itemsInVisibleArea = Math.round(widthWrapper / widthItem);\r\n\r\n  if (itemsInVisibleArea === this._itemsInVisibleArea) {\r\n    return;\r\n  }\r\n\r\n  this._autoplay(\"stop\");\r\n\r\n  this._$items.classList.add(SLIDER_TRANSITION_OFF);\r\n  this._$items.style.transform = \"translateX(0)\";\r\n\r\n  // setting properties after reset\r\n  this._widthItem = widthItem;\r\n  this._widthWrapper = widthWrapper;\r\n  this._itemsInVisibleArea = itemsInVisibleArea;\r\n  this._transform = 0;\r\n  this._transformStep = 100 / itemsInVisibleArea;\r\n  this._balancingItemsFlag = false;\r\n  this._activeItems = [];\r\n\r\n  // setting order and translate items after reset\r\n  for (var i = 0, length = $itemList.length; i < length; i++) {\r\n    var $item = $itemList[i];\r\n    var position = i;\r\n    $item.dataset.index = position;\r\n    $item.dataset.order = position;\r\n    $item.dataset.translate = 0;\r\n    $item.style.transform = \"translateX(0)\";\r\n    if (position < itemsInVisibleArea) {\r\n      this._activeItems.push(position);\r\n    }\r\n  }\r\n\r\n  this._setActiveClass();\r\n  this._updateIndicators();\r\n  window.requestAnimationFrame(\r\n    function () {\r\n      this._$items.classList.remove(SLIDER_TRANSITION_OFF);\r\n    }.bind(this)\r\n  );\r\n\r\n  // hide prev arrow for non-infinite slider\r\n  if (!this._config.loop) {\r\n    if (this._$controlPrev) {\r\n      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);\r\n    }\r\n    return;\r\n  }\r\n\r\n  // translate last item before first\r\n  var count = $itemList.length - 1;\r\n  var translate = -$itemList.length * 100;\r\n  $itemList[count].dataset.order = -1;\r\n  $itemList[count].dataset.translate = -$itemList.length * 100;\r\n  $itemList[count].style.transform = \"translateX(\".concat(translate, \"%)\");\r\n  // update values of extreme properties\r\n  this.__refreshExtremeValues();\r\n  // calling _autoplay\r\n  this._autoplay();\r\n};\r\n\r\n// public\r\nChiefSlider.prototype.next = function () {\r\n  this._moveToNext();\r\n};\r\nChiefSlider.prototype.prev = function () {\r\n  this._moveToPrev();\r\n};\r\nChiefSlider.prototype.moveTo = function (index) {\r\n  this._moveTo(index);\r\n};\r\nChiefSlider.prototype.refresh = function () {\r\n  this._refresh();\r\n};\r\n\r\n//? ================ slider ========================================\r\nconst slider = new ChiefSlider(\".slider\", {\r\n  loop: true,\r\n  autoplay: true,\r\n  interval: 7000,\r\n});\r\n\r\n//? ========================================================\r\n// let body = document.querySelector('body');\r\n// if(isMobile.any()){\r\n//   body.classList.add('touch');\r\n//   let arrow = document.querySelectorAll('.arrow');\r\n//   for(i=0; i<arrow.length; i++){\r\n//       let subMenu = arrow[i].nextElementSibling;\r\n//       let thisArrow = arrow[i];\r\n\r\n//       arrow[i].addEventListener('click', function(){\r\n//           subMenu.classList.toggle('open');\r\n//           thisArrow.classList.toggle('active');\r\n//       });\r\n//   }\r\n// }else{\r\n//   body.classList.add('mouse');\r\n// }\r\n\r\n\r\n\r\n\r\n\r\n//? ================ accordion ========================================\r\nclass ItcAccordion {\r\n  constructor(target, config) {\r\n    this._el = typeof target === 'string' ? document.querySelector(target) : target;\r\n    const defaultConfig = {\r\n      alwaysOpen: true,\r\n      duration: 350\r\n    };\r\n    this._config = Object.assign(defaultConfig, config);\r\n    this.addEventListener();\r\n  }\r\n  addEventListener() {\r\n    this._el.addEventListener('click', (e) => {\r\n      const elHeader = e.target.closest('.accordion__header');\r\n      if (!elHeader) {\r\n        return;\r\n      }\r\n      if (!this._config.alwaysOpen) {\r\n        const elOpenItem = this._el.querySelector('.accordion__item_show');\r\n        if (elOpenItem) {\r\n          elOpenItem !== elHeader.parentElement ? this.toggle(elOpenItem) : null;\r\n        }\r\n      }\r\n      this.toggle(elHeader.parentElement);\r\n    });\r\n  }\r\n  show(el) {\r\n    const elBody = el.querySelector('.accordion__body');\r\n    if (elBody.classList.contains('collapsing') || el.classList.contains('accordion__item_show')) {\r\n      return;\r\n    }\r\n    elBody.style['display'] = 'block';\r\n    const height = elBody.offsetHeight;\r\n    elBody.style['height'] = 0;\r\n    elBody.style['overflow'] = 'hidden';\r\n    elBody.style['transition'] = `height ${this._config.duration}ms ease`;\r\n    elBody.classList.add('collapsing');\r\n    el.classList.add('accordion__item_slidedown');\r\n    elBody.offsetHeight;\r\n    elBody.style['height'] = `${height}px`;\r\n    window.setTimeout(() => {\r\n      elBody.classList.remove('collapsing');\r\n      el.classList.remove('accordion__item_slidedown');\r\n      elBody.classList.add('collapse');\r\n      el.classList.add('accordion__item_show');\r\n      elBody.style['display'] = '';\r\n      elBody.style['height'] = '';\r\n      elBody.style['transition'] = '';\r\n      elBody.style['overflow'] = '';\r\n    }, this._config.duration);\r\n  }\r\n  hide(el) {\r\n    const elBody = el.querySelector('.accordion__body');\r\n    if (elBody.classList.contains('collapsing') || !el.classList.contains('accordion__item_show')) {\r\n      return;\r\n    }\r\n    elBody.style['height'] = `${elBody.offsetHeight}px`;\r\n    elBody.offsetHeight;\r\n    elBody.style['display'] = 'block';\r\n    elBody.style['height'] = 0;\r\n    elBody.style['overflow'] = 'hidden';\r\n    elBody.style['transition'] = `height ${this._config.duration}ms ease`;\r\n    elBody.classList.remove('collapse');\r\n    el.classList.remove('accordion__item_show');\r\n    elBody.classList.add('collapsing');\r\n    window.setTimeout(() => {\r\n      elBody.classList.remove('collapsing');\r\n      elBody.classList.add('collapse');\r\n      elBody.style['display'] = '';\r\n      elBody.style['height'] = '';\r\n      elBody.style['transition'] = '';\r\n      elBody.style['overflow'] = '';\r\n    }, this._config.duration);\r\n  }\r\n  toggle(el) {\r\n    el.classList.contains('accordion__item_show') ? this.hide(el) : this.show(el);\r\n  }\r\n}\r\nnew ItcAccordion(document.querySelector('.accordion'), {\r\n  alwaysOpen: true\r\n});\n\n//# sourceURL=webpack://gulp-starter/./src/js/main.js?");
+var WRAPPER_SELECTOR = ".slider__wrapper";
+var ITEMS_SELECTOR = ".slider__items";
+var ITEM_SELECTOR = ".slider__item";
+var CONTROL_CLASS = "slider__control";
 
-/***/ })
+/* var ITEM_CLASS_ACTIVE = 'slider__item_active';
+var CONTROL_SELECTOR = '.slider__control';
+var CONTROL_CLASS_SHOW = 'slider__control_show';
+// индикаторы
+var INDICATOR_WRAPPER_ELEMENT = 'ol';
+var INDICATOR_WRAPPER_CLASS = 'slider__indicators';
+var INDICATOR_ITEM_ELEMENT = 'li';
+var INDICATOR_ITEM_CLASS = 'slider__indicator';
+var INDICATOR_ITEM_CLASS_ACTIVE = 'slider__indicator_active';
+// порог для переключения слайда (40%)
+var POS_THRESHOLD = 40;
+// класс для отключения transition
+var TRANSITION_NONE = 'transition-none';*/
 
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./src/js/main.js"]();
-/******/ 	
-/******/ })()
-;
+var SELECTOR_PREV = '.slider__control[data-slide="prev"]';
+var SELECTOR_NEXT = '.slider__control[data-slide="next"]';
+var SELECTOR_INDICATOR = ".slider__indicators>li";
+var SLIDER_TRANSITION_OFF = "slider_disable-transition";
+var CLASS_CONTROL_HIDE = "slider__control_hide";
+var CLASS_ITEM_ACTIVE = "slider__item_active";
+var CLASS_INDICATOR_ACTIVE = "active";
+
+function ChiefSlider(selector, config) {
+  // элементы слайдера
+  var $root =
+    typeof selector === "string" ? document.querySelector(selector) : selector;
+  this._$root = $root;
+  this._$wrapper = $root.querySelector(WRAPPER_SELECTOR);
+  this._$items = $root.querySelector(ITEMS_SELECTOR);
+  this._$itemList = $root.querySelectorAll(ITEM_SELECTOR);
+  this._$controlPrev = $root.querySelector(SELECTOR_PREV);
+  this._$controlNext = $root.querySelector(SELECTOR_NEXT);
+  this._$indicatorList = $root.querySelectorAll(SELECTOR_INDICATOR);
+  // экстремальные значения слайдов
+  this._minOrder = 0;
+  this._maxOrder = 0;
+  this._$itemWithMinOrder = null;
+  this._$itemWithMaxOrder = null;
+  this._minTranslate = 0;
+  this._maxTranslate = 0;
+  // направление смены слайдов (по умолчанию)
+  this._direction = "next";
+  // determines whether the position of item needs to be determined
+  this._balancingItemsFlag = false;
+  this._activeItems = [];
+  // текущее значение трансформации
+  this._transform = 0;
+  // swipe параметры
+  this._hasSwipeState = false;
+  this.__swipeStartPos = 0;
+  // slider properties
+  this._transform = 0; // текущее значение трансформации
+  this._intervalId = null;
+  // configuration of the slider
+  this._config = {
+    loop: true,
+    autoplay: false,
+    interval: 5000,
+    refresh: true,
+    swipe: true,
+  };
+  for (var key in config) {
+    if (this._config.hasOwnProperty(key)) {
+      this._config[key] = config[key];
+    }
+  }
+  // create some constants
+  var $itemList = this._$itemList;
+  var widthItem = $itemList[0].offsetWidth;
+  var widthWrapper = this._$wrapper.offsetWidth;
+  var itemsInVisibleArea = Math.round(widthWrapper / widthItem);
+  // initial setting properties
+  this._widthItem = widthItem;
+  this._widthWrapper = widthWrapper;
+  this._itemsInVisibleArea = itemsInVisibleArea;
+  this._transformStep = 100 / itemsInVisibleArea;
+  // initial setting order and translate items
+  for (var i = 0, length = $itemList.length; i < length; i++) {
+    $itemList[i].dataset.index = i;
+    $itemList[i].dataset.order = i;
+    $itemList[i].dataset.translate = 0;
+    if (i < itemsInVisibleArea) {
+      this._activeItems.push(i);
+    }
+  }
+  if (this._config.loop) {
+    // перемещаем последний слайд перед первым
+    var count = $itemList.length - 1;
+    var translate = -$itemList.length * 100;
+    $itemList[count].dataset.order = -1;
+    $itemList[count].dataset.translate = -$itemList.length * 100;
+    $itemList[count].style.transform = "translateX(" + translate + "%)";
+    this.__refreshExtremeValues();
+  } else {
+    if (this._$controlPrev) {
+      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);
+    }
+  }
+  this._setActiveClass();
+  this._addEventListener();
+  this._updateIndicators();
+  this._autoplay();
+}
+
+// подключения обработчиков событий для слайдера
+ChiefSlider.prototype._addEventListener = function () {
+  var $root = this._$root;
+  var $items = this._$items;
+  var config = this._config;
+  function onClick(e) {
+    var $target = e.target;
+    this._autoplay("stop");
+    if ($target.classList.contains(CONTROL_CLASS)) {
+      e.preventDefault();
+      this._direction = $target.dataset.slide;
+      this._move();
+    } else if ($target.dataset.slideTo) {
+      var index = parseInt($target.dataset.slideTo);
+      this._moveTo(index);
+    }
+    if (this._config.loop) {
+      this._autoplay();
+    }
+  }
+  function onMouseEnter(e) {
+    this._autoplay("stop");
+  }
+  function onMouseLeave(e) {
+    this._autoplay();
+  }
+  function onTransitionStart() {
+    if (this._balancingItemsFlag) {
+      return;
+    }
+    this._balancingItemsFlag = true;
+    window.requestAnimationFrame(this._balancingItems.bind(this));
+  }
+  function onTransitionEnd() {
+    this._balancingItemsFlag = false;
+  }
+  function onResize() {
+    window.requestAnimationFrame(this._refresh.bind(this));
+  }
+  function onSwipeStart(e) {
+    this._autoplay("stop");
+    var event = e.type.search("touch") === 0 ? e.touches[0] : e;
+    this._swipeStartPos = event.clientX;
+    this._hasSwipeState = true;
+  }
+  function onSwipeEnd(e) {
+    if (!this._hasSwipeState) {
+      return;
+    }
+    var event = e.type.search("touch") === 0 ? e.changedTouches[0] : e;
+    var diffPos = this._swipeStartPos - event.clientX;
+    if (diffPos > 50) {
+      this._direction = "next";
+      this._move();
+    } else if (diffPos < -50) {
+      this._direction = "prev";
+      this._move();
+    }
+    this._hasSwipeState = false;
+    if (this._config.loop) {
+      this._autoplay();
+    }
+  }
+  function onDragStart(e) {
+    e.preventDefault();
+  }
+  function onVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      this._autoplay("stop");
+    } else if (document.visibilityState === "visible") {
+      if (this._config.loop) {
+        this._autoplay();
+      }
+    }
+  }
+
+  $root.addEventListener("click", onClick.bind(this));
+  $root.addEventListener("mouseenter", onMouseEnter.bind(this));
+  $root.addEventListener("mouseleave", onMouseLeave.bind(this));
+  // on resize
+  if (config.refresh) {
+    window.addEventListener("resize", onResize.bind(this));
+  }
+  // on transitionstart and transitionend
+  if (config.loop) {
+    $items.addEventListener("transition-start", onTransitionStart.bind(this));
+    $items.addEventListener("transitionend", onTransitionEnd.bind(this));
+  }
+  // on touchstart and touchend
+  if (config.swipe) {
+    $root.addEventListener("touchstart", onSwipeStart.bind(this));
+    $root.addEventListener("mousedown", onSwipeStart.bind(this));
+    document.addEventListener("touchend", onSwipeEnd.bind(this));
+    document.addEventListener("mouseup", onSwipeEnd.bind(this));
+  }
+  $root.addEventListener("dragstart", onDragStart.bind(this));
+  // при изменении активности вкладки
+  document.addEventListener("visibilitychange", onVisibilityChange.bind(this));
+};
+
+// update values of extreme properties
+ChiefSlider.prototype.__refreshExtremeValues = function () {
+  var $itemList = this._$itemList;
+  this._minOrder = +$itemList[0].dataset.order;
+  this._maxOrder = this._minOrder;
+  this._$itemByMinOrder = $itemList[0];
+  this._$itemByMaxOrder = $itemList[0];
+  this._minTranslate = +$itemList[0].dataset.translate;
+  this._maxTranslate = this._minTranslate;
+  for (var i = 0, length = $itemList.length; i < length; i++) {
+    var $item = $itemList[i];
+    var order = +$item.dataset.order;
+    if (order < this._minOrder) {
+      this._minOrder = order;
+      this._$itemByMinOrder = $item;
+      this._minTranslate = +$item.dataset.translate;
+    } else if (order > this._maxOrder) {
+      this._maxOrder = order;
+      this._$itemByMaxOrder = $item;
+      this._maxTranslate = +$item.dataset.translate;
+    }
+  }
+};
+
+// update position of item
+ChiefSlider.prototype._balancingItems = function () {
+  if (!this._balancingItemsFlag) {
+    return;
+  }
+  var $wrapper = this._$wrapper;
+  var $wrapperClientRect = $wrapper.getBoundingClientRect();
+  var widthHalfItem = $wrapperClientRect.width / this._itemsInVisibleArea / 2;
+  var count = this._$itemList.length;
+  var translate;
+  var clientRect;
+  if (this._direction === "next") {
+    var wrapperLeft = $wrapperClientRect.left;
+    var $min = this._$itemByMinOrder;
+    translate = this._minTranslate;
+    clientRect = $min.getBoundingClientRect();
+    if (clientRect.right < wrapperLeft - widthHalfItem) {
+      $min.dataset.order = this._minOrder + count;
+      translate += count * 100;
+      $min.dataset.translate = translate;
+      $min.style.transform = "translateX(".concat(translate, "%)");
+      // update values of extreme properties
+      this.__refreshExtremeValues();
+    }
+  } else {
+    var wrapperRight = $wrapperClientRect.right;
+    var $max = this._$itemByMaxOrder;
+    translate = this._maxTranslate;
+    clientRect = $max.getBoundingClientRect();
+    if (clientRect.left > wrapperRight + widthHalfItem) {
+      $max.dataset.order = this._maxOrder - count;
+      translate -= count * 100;
+      $max.dataset.translate = translate;
+      $max.style.transform = "translateX(".concat(translate, "%)");
+      // update values of extreme properties
+      this.__refreshExtremeValues();
+    }
+  }
+  // updating...
+  requestAnimationFrame(this._balancingItems.bind(this));
+};
+
+// _setActiveClass
+ChiefSlider.prototype._setActiveClass = function () {
+  var activeItems = this._activeItems;
+  var $itemList = this._$itemList;
+  for (var i = 0, length = $itemList.length; i < length; i++) {
+    var $item = $itemList[i];
+    var index = +$item.dataset.index;
+    if (activeItems.indexOf(index) > -1) {
+      $item.classList.add(CLASS_ITEM_ACTIVE);
+    } else {
+      $item.classList.remove(CLASS_ITEM_ACTIVE);
+    }
+  }
+};
+
+// _updateIndicators
+ChiefSlider.prototype._updateIndicators = function () {
+  var $indicatorList = this._$indicatorList;
+  var $itemList = this._$itemList;
+  if (!$indicatorList.length) {
+    return;
+  }
+  for (var index = 0, length = $itemList.length; index < length; index++) {
+    var $item = $itemList[index];
+    if ($item.classList.contains(CLASS_ITEM_ACTIVE)) {
+      $indicatorList[index].classList.add(CLASS_INDICATOR_ACTIVE);
+    } else {
+      $indicatorList[index].classList.remove(CLASS_INDICATOR_ACTIVE);
+    }
+  }
+};
+
+// move slides
+ChiefSlider.prototype._move = function () {
+  var step =
+    this._direction === "next" ? -this._transformStep : this._transformStep;
+  var transform = this._transform + step;
+  if (!this._config.loop) {
+    var endTransformValue =
+      this._transformStep * (this._$itemList.length - this._itemsInVisibleArea);
+    transform = Math.round(transform * 10) / 10;
+    if (transform < -endTransformValue || transform > 0) {
+      return;
+    }
+    this._$controlPrev.classList.remove(CLASS_CONTROL_HIDE);
+    this._$controlNext.classList.remove(CLASS_CONTROL_HIDE);
+    if (transform === -endTransformValue) {
+      this._$controlNext.classList.add(CLASS_CONTROL_HIDE);
+    } else if (transform === 0) {
+      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);
+    }
+  }
+  var activeIndex = [];
+  var i = 0;
+  var length;
+  var index;
+  var newIndex;
+  if (this._direction === "next") {
+    for (i = 0, length = this._activeItems.length; i < length; i++) {
+      index = this._activeItems[i];
+      newIndex = ++index;
+      if (newIndex > this._$itemList.length - 1) {
+        newIndex -= this._$itemList.length;
+      }
+      activeIndex.push(newIndex);
+    }
+  } else {
+    for (i = 0, length = this._activeItems.length; i < length; i++) {
+      index = this._activeItems[i];
+      newIndex = --index;
+      if (newIndex < 0) {
+        newIndex += this._$itemList.length;
+      }
+      activeIndex.push(newIndex);
+    }
+  }
+  this._activeItems = activeIndex;
+  this._setActiveClass();
+  this._updateIndicators();
+  this._transform = transform;
+  this._$items.style.transform = "translateX(" + transform + "%)";
+  this._$items.dispatchEvent(
+    new CustomEvent("transition-start", { bubbles: true })
+  );
+};
+
+// _moveToNext
+ChiefSlider.prototype._moveToNext = function () {
+  this._direction = "next";
+  this._move();
+};
+
+// _moveToPrev
+ChiefSlider.prototype._moveToPrev = function () {
+  this._direction = "prev";
+  this._move();
+};
+
+// _moveTo
+ChiefSlider.prototype._moveTo = function (index) {
+  var $indicatorList = this._$indicatorList;
+  var nearestIndex = null;
+  var diff = null;
+  var i;
+  var length;
+  for (i = 0, length = $indicatorList.length; i < length; i++) {
+    var $indicator = $indicatorList[i];
+    if ($indicator.classList.contains(CLASS_INDICATOR_ACTIVE)) {
+      var slideTo = +$indicator.dataset.slideTo;
+      if (diff === null) {
+        nearestIndex = slideTo;
+        diff = Math.abs(index - nearestIndex);
+      } else {
+        if (Math.abs(index - slideTo) < diff) {
+          nearestIndex = slideTo;
+          diff = Math.abs(index - nearestIndex);
+        }
+      }
+    }
+  }
+  diff = index - nearestIndex;
+  if (diff === 0) {
+    return;
+  }
+  this._direction = diff > 0 ? "next" : "prev";
+  for (i = 1; i <= Math.abs(diff); i++) {
+    this._move();
+  }
+};
+
+// _autoplay
+ChiefSlider.prototype._autoplay = function (action) {
+  if (!this._config.autoplay) {
+    return;
+  }
+  if (action === "stop") {
+    clearInterval(this._intervalId);
+    this._intervalId = null;
+    return;
+  }
+  if (this._intervalId === null) {
+    this._intervalId = setInterval(
+      function () {
+        this._direction = "next";
+        this._move();
+      }.bind(this),
+      this._config.interval
+    );
+  }
+};
+
+// _refresh
+ChiefSlider.prototype._refresh = function () {
+  // create some constants
+  var $itemList = this._$itemList;
+  var widthItem = $itemList[0].offsetWidth;
+  var widthWrapper = this._$wrapper.offsetWidth;
+  var itemsInVisibleArea = Math.round(widthWrapper / widthItem);
+
+  if (itemsInVisibleArea === this._itemsInVisibleArea) {
+    return;
+  }
+
+  this._autoplay("stop");
+
+  this._$items.classList.add(SLIDER_TRANSITION_OFF);
+  this._$items.style.transform = "translateX(0)";
+
+  // setting properties after reset
+  this._widthItem = widthItem;
+  this._widthWrapper = widthWrapper;
+  this._itemsInVisibleArea = itemsInVisibleArea;
+  this._transform = 0;
+  this._transformStep = 100 / itemsInVisibleArea;
+  this._balancingItemsFlag = false;
+  this._activeItems = [];
+
+  // setting order and translate items after reset
+  for (var i = 0, length = $itemList.length; i < length; i++) {
+    var $item = $itemList[i];
+    var position = i;
+    $item.dataset.index = position;
+    $item.dataset.order = position;
+    $item.dataset.translate = 0;
+    $item.style.transform = "translateX(0)";
+    if (position < itemsInVisibleArea) {
+      this._activeItems.push(position);
+    }
+  }
+
+  this._setActiveClass();
+  this._updateIndicators();
+  window.requestAnimationFrame(
+    function () {
+      this._$items.classList.remove(SLIDER_TRANSITION_OFF);
+    }.bind(this)
+  );
+
+  // hide prev arrow for non-infinite slider
+  if (!this._config.loop) {
+    if (this._$controlPrev) {
+      this._$controlPrev.classList.add(CLASS_CONTROL_HIDE);
+    }
+    return;
+  }
+
+  // translate last item before first
+  var count = $itemList.length - 1;
+  var translate = -$itemList.length * 100;
+  $itemList[count].dataset.order = -1;
+  $itemList[count].dataset.translate = -$itemList.length * 100;
+  $itemList[count].style.transform = "translateX(".concat(translate, "%)");
+  // update values of extreme properties
+  this.__refreshExtremeValues();
+  // calling _autoplay
+  this._autoplay();
+};
+
+// public
+ChiefSlider.prototype.next = function () {
+  this._moveToNext();
+};
+ChiefSlider.prototype.prev = function () {
+  this._moveToPrev();
+};
+ChiefSlider.prototype.moveTo = function (index) {
+  this._moveTo(index);
+};
+ChiefSlider.prototype.refresh = function () {
+  this._refresh();
+};
+
+const slider = new ChiefSlider(".slider", {
+  loop: true,
+  autoplay: true,
+  interval: 7000,
+});;
+
+
+
+
+
+
+
+
+
+
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiIiwic291cmNlcyI6WyJtYWluLmpzIl0sInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGlzTW9iaWxlID0ge1xyXG4gIEFuZHJvaWQ6IGZ1bmN0aW9uICgpIHtcclxuICAgIHJldHVybiBuYXZpZ2F0b3IudXNlckFnZW50Lm1hdGNoKC9BbmRyb2lkL2kpO1xyXG4gIH0sXHJcbiAgQmxhY2tCZXJyeTogZnVuY3Rpb24gKCkge1xyXG4gICAgcmV0dXJuIG5hdmlnYXRvci51c2VyQWdlbnQubWF0Y2goL0JsYWNrQmVycnkvaSk7XHJcbiAgfSxcclxuICBpT1M6IGZ1bmN0aW9uICgpIHtcclxuICAgIHJldHVybiBuYXZpZ2F0b3IudXNlckFnZW50Lm1hdGNoKC9pUGhvbmV8aVBhZHxpUG9kL2kpO1xyXG4gIH0sXHJcbiAgT3BlcmE6IGZ1bmN0aW9uICgpIHtcclxuICAgIHJldHVybiBuYXZpZ2F0b3IudXNlckFnZW50Lm1hdGNoKC9PcGVyYSBNaW5pL2kpO1xyXG4gIH0sXHJcbiAgV2luZG93czogZnVuY3Rpb24gKCkge1xyXG4gICAgcmV0dXJuIG5hdmlnYXRvci51c2VyQWdlbnQubWF0Y2goL0lFTW9iaWxlL2kpO1xyXG4gIH0sXHJcbiAgYW55OiBmdW5jdGlvbiAoKSB7XHJcbiAgICByZXR1cm4gKFxyXG4gICAgICBpc01vYmlsZS5BbmRyb2lkKCkgfHxcclxuICAgICAgaXNNb2JpbGUuQmxhY2tCZXJyeSgpIHx8XHJcbiAgICAgIGlzTW9iaWxlLmlPUygpIHx8XHJcbiAgICAgIGlzTW9iaWxlLk9wZXJhKCkgfHxcclxuICAgICAgaXNNb2JpbGUuV2luZG93cygpXHJcbiAgICApO1xyXG4gIH0sXHJcbn07XHJcblxyXG5pZiAoaXNNb2JpbGUuYW55KCkpIHtcclxuICBkb2N1bWVudC5ib2R5LmNsYXNzTGlzdC5hZGQoXCJ0b3VjaFwiKTtcclxuXHJcbiAgbGV0IG1lbnVBcnJvd3MgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKFwiLm1lbnVfX2Fycm93XCIpO1xyXG4gIGlmIChtZW51QXJyb3dzLmxlbmd0aCA+IDApIHtcclxuICAgIGZvciAobGV0IGkgPSAwOyBpIDwgbWVudUFycm93cy5sZW5ndGg7IGkrKykge1xyXG4gICAgICBjb25zdCBtZW51QXJyb3cgPSBtZW51QXJyb3dzW2ldO1xyXG4gICAgICBtZW51QXJyb3cuYWRkRXZlbnRMaXN0ZW5lcihcImNsaWNrXCIsIGZ1bmN0aW9uIChlKSB7XHJcbiAgICAgICAgbWVudUFycm93LnBhcmVudEVsZW1lbnQuY2xhc3NMaXN0LnRvZ2dsZShcIl9hY3RpdmVcIik7XHJcbiAgICAgIH0pO1xyXG4gICAgfVxyXG4gIH1cclxufSBlbHNlIHtcclxuICBkb2N1bWVudC5ib2R5LmNsYXNzTGlzdC5hZGQoXCJtb3VzZVwiKTtcclxufVxyXG5cclxuLy8gQlVSR0VSLU1FTlVcclxuY29uc3QgaWNvbk1lbnUgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLm1lbnVfX2ljb25cIik7XHJcbmNvbnN0IG1lbnVCb2R5ID0gZG9jdW1lbnQucXVlcnlTZWxlY3RvcihcIi5tZW51X19ib2R5XCIpO1xyXG5pZiAoaWNvbk1lbnUpIHtcclxuICBpY29uTWVudS5hZGRFdmVudExpc3RlbmVyKFwiY2xpY2tcIiwgZnVuY3Rpb24gKGUpIHtcclxuICAgIGRvY3VtZW50LmJvZHkuY2xhc3NMaXN0LnRvZ2dsZShcIl9sb2NrXCIpO1xyXG4gICAgaWNvbk1lbnUuY2xhc3NMaXN0LnRvZ2dsZShcIl9hY3RpdmVcIik7XHJcbiAgICBtZW51Qm9keS5jbGFzc0xpc3QudG9nZ2xlKFwiX2FjdGl2ZVwiKTtcclxuICB9KTtcclxufVxyXG5cclxuQEBpbmNsdWRlKCdtb2R1bGVzL2NoaWVmLXNsaWRlci5qcycpO1xyXG5cclxuXHJcblxyXG5cclxuXHJcblxyXG5cclxuXHJcblxyXG5cclxuXHJcbiJdLCJmaWxlIjoibWFpbi5qcyJ9
